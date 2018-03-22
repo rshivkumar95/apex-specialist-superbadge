@@ -1,0 +1,16 @@
+public class WarehouseCalloutServiceMock implements HttpCalloutMock {
+    // implement http mock callout
+    
+    public HttpResponse respond(HttpRequest req){
+        
+        System.assertEquals('https://th-superbadge-apex.herokuapp.com/equipment', req.getEndpoint());
+        System.assertEquals('GET', req.getMethod());
+        
+		HttpResponse res = new HttpResponse();
+        res.setHeader('Content-Type', 'application/json');
+		res.setBody('[{"_id":"55d66226726b611100aaf74e","replacement":false,"quantity":10,"name":"UPS 1000 VA","maintenanceperiod":180,"lifespan":48,"cost":1000,"sku":"100016"}]');
+        res.setStatusCode(200);
+        return res;
+        
+    }
+}

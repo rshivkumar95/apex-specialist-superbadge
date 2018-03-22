@@ -1,0 +1,51 @@
+public class MaintenanceRequestHelper {
+    
+    public static void updateWorkOrders(Map<Id,Case> validCases)
+    {
+        
+        Map<Id,Integer> productMap=new Map<Id,Integer>();
+        List<Case> newCases = new List<Case>();
+        List<Product2> productList = [select Id, Maintenance_Cycle__c from Product2];
+        
+        for(Product2 p : productList)
+        {
+            if(p.Maintenance_Cycle__c!=null)
+                productMap.put(p.Id, Integer.valueOf(p.Maintenance_Cycle__c));
+        }
+        
+        List<Case> validCases1 = validCases.values();
+       
+        for(Case c : validCases1)
+        {
+            Case newCase = new Case();
+            newCase.Type='Routine Maintenance';                       
+            
+            newCase.Subject=String.isBlank(c.Subject) ? 'Routine Maintenance Request' : c.Subject;
+            
+            newCase.Date_Reported__c=Date.today();
+            newCase.Status='New';
+            
+            
+            
+            newCase.Date_Due__c = (productMap.get(c.Id)!=null) ? Date.today().addDays(Integer.valueOf(productMap.get(c.Id))) : Date.today();
+            
+            newCase.Vehicle__c = c.Vehicle__c;
+            newCase.Equipment__c = c.Equipment__c;
+            newCase.Product__c = c.Product__c;
+            newCase.AccountId = c.AccountId;
+            newCase.ContactId = c.ContactId;
+            newCase.AssetId = c.AssetId;
+            newCase.Origin = c.Origin;
+            newCase.Reason = c.Reason;
+            
+            newCases.add(newCase);
+                      
+        }
+        
+        insert newCases;
+        
+        
+        
+    }
+
+}
